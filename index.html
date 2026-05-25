@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="sv"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rinken FC - Officiellt Matchcenter</title>
+    <style> 
+        /* Globala stilar - Ljust, fräscht tema med kraftfulla röda och svarta kontraster */
+        body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: #f4f6f9; 
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        } 
+
+        /* Header / Toppmeny - Nu i djupsvart med röd linje */
+        header {
+            background: #111111;
+            border-bottom: 3px solid #e11d48;
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .club-logo-placeholder {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #e11d48 0%, #991b1b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+        }
+
+        header h1 { 
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+            font-weight: 800;
+            color: #ffffff;
+        } 
+
+        .header-status {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e11d48;
+            background: rgba(225, 29, 72, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            font-weight: bold;
+        }
+
+        /* Huvudlayout - Två kolumner */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .content-main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Paneler */
+        .panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            text-align: left;
+        }
+
+        /* Lagväljare - Djupsvart sportdesign med röda knappar */
+        .lag-styre {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #111111;
+            padding: 18px 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .lag-titel-display {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-btn {
+            background: #e11d48;
+            color: #ffffff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: #be123c;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(225, 29, 72, 0.4);
+        }
+
+        .panel-titel {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e11d48;
+            margin: 0 0 18px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* iFrame-område */
+        .widget-box {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            min-height: 550px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 580px;
+            border: none;
+            display: block;
+        }
+
+        /* HÖGER KOLUMN */
+        .content-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Matchkort i ljust utförande med röd accent */
+        .countdown-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #e11d48;
+            position: relative;
+        }
+
+        .next-match-details {
+            background: #fff5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid #e11d48;
+        }
+
+        .match-teams {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #111111;
+            margin-bottom: 6px;
+        }
+
+        .match-time-meta {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .cd-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .cd-clock {
+            font-size: 1.9rem;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+            color: #111111;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* Karta */
+        .map-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #111111;
+        }
+
+        .map-address {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .map-box {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            height: 250px;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                margin: 15px auto;
+            }
+            .content-sidebar {
+                order: -1;
+            }
+        }
+    </style>    
+</head>
+<body> 
+
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="club-logo-placeholder">RFC</div>
+                <h1>Rinken FC</h1>
+            </div>
+            <div class="header-status">Matchcenter Live</div>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        
+        <div class="content-main">
+            
+            <div class="lag-styre">
+                <button class="nav-btn" onclick="forraLag()">◀</button>
+                <div class="lag-titel-display" id="lag-namn">-</div>
+                <button class="nav-btn" onclick="nastaLag()">▶</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-titel">📅 Aktuella Matcher & Serietabell</div>
+                <div class="widget-box" id="widget-container"></div>
+            </div>
+        </div>
+
+        <div class="content-sidebar">
+            
+            <div class="panel countdown-card">
+                <div class="panel-titel" style="color: #e11d48;">⏰ Nästa Match</div>
+                
+                <div class="next-match-details">
+                    <div class="match-teams" id="match-aktuella-lag">Laddar match...</div>
+                    <div class="match-time-meta" id="match-klockslag">-</div>
+                </div>
+
+                <div class="cd-label" id="countdown-rubrik">Nedräkning</div>
+                <div class="cd-clock" id="countdown-display">00d 00t 00m 00s</div>
+            </div>
+
+            <div class="panel map-card">
+                <h3>📍 Grönevi IP</h3>
+                <div class="map-address">Hemmaplan • Näsby, Kristianstad</div>
+                <div class="map-box">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2227.0678250009945!2d14.1678144!3d56.0465228!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46540348705ba86f%3A0x6b876fc6055c822e!2zR3LDtm5ldmkgSVAsIDI5MSA5NCBLcmlzdGlhbnN0YWQ!5e0!3m2!1ssv!2sse!4v1716760000000!5m2!1ssv!2sse" 
+                        style="width:100%; height:100%; border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script> 
+        // Vårens matchlistor lagrade för automatisk växling
+        const lagData = [
+            {
+                namn: "Pojkar 2015",
+                widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=372619&b1=%23ffffff&f1=%231e293b&b2=%23f8fafc&f2=%231e293b&b4=%23ffffff&f3=%231e293b&b3=%23f8fafc&bo=%23e2e8f0",
+                matcher: [
+                    { tidsstampel: "2026-05-31T17:00:00", text: "Rinken FC vit - Vinnö IF", info: "Söndag 31 maj kl. 17:00 (Hemma)" },
+                    { tidsstampel: "2026-05-31T18:15:00", text: "Rinken FC svart - Wä IF orange", info: "Söndag 31 maj kl. 18:15 (Hemma)" },
+                    { tidsstampel: "2026-06-07T10:30:00", text: "Åsums BK vit - Rinken FC svart", info: "Söndag 7 juni kl. 10:30 (Borta)" },
+                    { tidsstampel: "2026-06-07T11:00:00", text: "Rinken FC vit - Tollarps IF blå", info: "Söndag 7 juni kl. 11:00 (Hemma)" },
+                    { tidsstampel: "2026-06-14T10:00:00", text: "Nosaby IF randig - Rinken FC vit", info: "Söndag 14 juni kl. 10:00 (Borta)" },
+                    { tidsstampel: "2026-06-14T11:00:00", text: "Rinken FC svart - Kristianstad FC svart", info: "Söndag 14 juni kl. 11:00 (Hemma)" }
+                ]
+            },
+            {
+                namn: "Herrar Senior",
+                widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=375895&b1=%23ffffff&f1=%231e293b&b2=%23f8fafc&f2=%231e293b&b4=%23ffffff&f3=%231e293b&b3=%23f8fafc&bo=%23e2e8f0",
+                matcher: [
+                    { tidsstampel: "2026-06-03T19:00:00", text: "Rinken FC vs Venestads IF", info: "Onsdag 3 juni kl. 19:00 (Hemma)" }
+                ]
+            },
+            {
+                namn: "Pojkar 9 år",
+                widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=377337&b1=%23ffffff&f1=%231e293b&b2=%23f8fafc&f2=%231e293b&b4=%23ffffff&f3=%231e293b&b3=%23f8fafc&bo=%23e2e8f0",
+                matcher: [
+                    { tidsstampel: "2026-05-30T10:00:00", text: "Rinken FC P9 vs Wä IF", info: "Lördag 30 maj kl. 10:00 (Hemma)" }
+                ]
+            },
+            {
+                namn: "Flickor 10 år",
+                widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=372611&b1=%23ffffff&f1=%231e293b&b2=%23f8fafc&f2=%231e293b&b4=%23ffffff&f3=%231e293b&b3=%23f8fafc&bo=%23e2e8f0",
+                matcher: [
+                    { tidsstampel: "2026-05-31T11:00:00", text: "Åhus Horna BK vs Rinken FC", info: "Söndag 31 maj kl. 11:00 (Borta)" }
+                ]
+            }
+        ];
+
+        let nuvarandeIndex = 0;
+        let countdownInterval;
+
+        function finnNastaMatchForLag(lag) {
+            const nu = new Date().getTime();
+            let framtidaMatcher = lag.matcher.filter(m => new Date(m.tidsstampel).getTime() > nu);
+            framtidaMatcher.sort((a, b) => new Date(a.tidsstampel).getTime() - new Date(b.tidsstampel).getTime());
+            return framtidaMatcher.length > 0 ? framtidaMatcher[0] : lag.matcher[lag.matcher.length - 1];
+        }
+
+        function hittaNarmasteLagIndex() {
+            const nu = new Date().getTime();
+            let narmasteIndex = 0;
+            let minstaAvstand = Infinity;
+
+            for (let i = 0; i < lagData.length; i++) {
+                const nastaMatch = finnNastaMatchForLag(lagData[i]);
+                const matchTid = new Date(nastaMatch.tidsstampel).getTime();
+                const avstand = matchTid - nu;
+
+                if (avstand > 0 && avstand < minstaAvstand) {
+                    minstaAvstand = avstand;
+                    narmasteIndex = i;
+                }
+            }
+            return narmasteIndex;
+        }
+
+        function nastaLag() {
+            nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length;
+            uppdateraSidan();
+        }
+
+        function forraLag() {
+            nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length;
+            uppdateraSidan();
+        }
+
+        function startaNedrakning(matchDatumStr) {
+            clearInterval(countdownInterval);
+            const display = document.getElementById('countdown-display');
+            const rubrik = document.getElementById('countdown-rubrik');
+            
+            const matchTid = new Date(matchDatumStr).getTime();
+
+            function mathKlocka() {
+                const nu = new Date().getTime();
+                const avstand = matchTid - nu;
+
+                if (avstand < 0) {
+                    rubrik.innerText = "Match pågår / Spelad";
+                    display.innerText = "00d 00t 00m 00s";
+                    return;
+                }
+
+                rubrik.innerText = "Avspark om";
+                
+                const dagar = Math.floor(avstand / (1000 * 60 * 60 * 24));
+                const timmar = Math.floor((avstand % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minuter = Math.floor((avstand % (1000 * 60 * 60)) / (1000 * 60));
+                const sekunder = Math.floor((avstand % (1000 * 60)) / 1000);
+
+                const d = dagar.toString().padStart(2, '0');
+                const t = timmar.toString().padStart(2, '0');
+                const m = minuter.toString().padStart(2, '0');
+                const s = sekunder.toString().padStart(2, '0');
+
+                display.innerText = `${d}d ${t}t ${m}m ${s}s`;
+            }
+
+            mathKlocka();
+            countdownInterval = setInterval(mathKlocka, 1000);
+        }
+
+        function uppdateraSidan() {
+            const lag = lagData[nuvarandeIndex];
+            document.getElementById('lag-namn').innerText = lag.namn;
+            
+            const aktuellMatch = finnNastaMatchForLag(lag);
+            
+            document.getElementById('match-aktuella-lag').innerText = aktuellMatch.text;
+            document.getElementById('match-klockslag').innerText = aktuellMatch.info;
+
+            startaNedrakning(aktuellMatch.tidsstampel);
+
+            const widgetContainer = document.getElementById('widget-container');
+            widgetContainer.innerHTML = ''; 
+
+            const iframe = document.createElement('iframe');
+            widgetContainer.appendChild(iframe);
+
+            const iframeDoc = iframe.contentWindow.document;
+            iframeDoc.open();
+            // Ljus och fräsch bakgrund även inuti förbundets widget
+            iframeDoc.write(`
+                <html lang="sv">
+                <head>
+                    <style>
+                        body { margin: 0; padding: 10px; background-color: #ffffff; color: #1e293b; font-family: sans-serif; }
+                        table, td, th, tr { background-color: #ffffff !important; color: #1e293b !important; border-color: #e2e8f0 !important; }
+                        a { color: #e11d48 !important; text-decoration: none; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <script type="text/javascript" src="${lag.widgetSrc}"><\/script>
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
+        }
+
+        nuvarandeIndex = hittaNarmasteLagIndex();
+        uppdateraSidan();
+    </script> 
+</body>
+</html>
