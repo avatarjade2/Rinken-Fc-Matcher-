@@ -5,65 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
     <title>Rinken FC - Officiellt Matchcenter</title>
-    <!-- Länkar till din nya designfil -->
     <link rel="stylesheet" href="style.css">
-    <!-- Länkar till din nya logikfil, 'defer' ser till att sidan laddas innan scriptet körs -->
     <script src="script.js" defer></script>
 </head>
 <body> 
-    <header>
+    <!-- HEADER -->
+    <header class="hero-header">
+        <div class="hero-background"></div>
         <div class="header-content">
             <div class="logo-area">
                 <div class="club-logo-placeholder">RFC</div>
-                <h1>Rinken FC</h1>
+                <div>
+                    <h1>Rinken FC</h1>
+                    <p class="subtitle">Matchcenter Live</p>
+                </div>
             </div>
-            <div class="header-status">Matchcenter Live</div>
+            <div class="header-pulse"></div>
         </div>
     </header>
 
-    <main class="main-layout">
-        <div class="content-main">
-            <div class="lag-styre reveal">
-                <button class="nav-btn" onclick="forraLag()">◀</button>
-                <div class="lag-titel-display" id="lag-namn">-</div>
-                <button class="nav-btn" onclick="nastaLag()">▶</button>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-content fade-in-up">
+            <div class="team-switcher">
+                <button class="nav-btn-large" onclick="forraLag()">◀</button>
+                <div class="team-display-hero">
+                    <h2 id="lag-namn-hero" class="team-name-large">Laddar lag...</h2>
+                    <p class="team-subtitle">Välj ditt lag</p>
+                </div>
+                <button class="nav-btn-large" onclick="nastaLag()">▶</button>
             </div>
-            
-            <div class="panel reveal">
-                <div class="panel-titel">📅 Aktuella Matcher & Serietabell</div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-layout">
+        <!-- LEFT COLUMN: MATCHES -->
+        <div class="content-main">
+            <!-- Next Match Card -->
+            <div class="next-match-hero reveal-left">
+                <div class="match-card-header">
+                    <span class="badge">NÄSTA MATCH</span>
+                    <span class="live-indicator">🔴 LIVE</span>
+                </div>
+                <div class="match-card-content">
+                    <div class="match-teams-large" id="match-aktuella-lag-hero">Laddar match...</div>
+                    <div class="match-time-large" id="match-klockslag-hero">-</div>
+                </div>
+                <div class="countdown-section">
+                    <div class="countdown-label" id="countdown-rubrik-hero">Nedräkning</div>
+                    <div class="countdown-display" id="countdown-display-hero">00d 00t 00m 00s</div>
+                </div>
+            </div>
+
+            <!-- Matches Widget -->
+            <div class="matches-panel reveal-left">
+                <div class="panel-header">
+                    <h3>📅 Matcher & Serietabell</h3>
+                    <span class="panel-icon">●</span>
+                </div>
                 <div class="widget-box">
                     <iframe id="match-widget" src=""></iframe>
                 </div>
             </div>
         </div>
 
+        <!-- RIGHT COLUMN: SIDEBAR -->
         <div class="content-sidebar">
-            <div class="panel countdown-card reveal">
-                <div class="panel-titel" style="color: #e11d48;">⏰ Nästa Match</div>
-                <div class="next-match-details">
-                    <div class="match-teams" id="match-aktuella-lag">Laddar match...</div>
-                    <div class="match-time-meta" id="match-klockslag">-</div>
+            <!-- Location Card -->
+            <div class="sidebar-card location-card reveal-right">
+                <div class="card-icon">📍</div>
+                <h3>Grönevi IP</h3>
+                <p class="location-subtitle">Hemmaplan • Näsby, Kristianstad</p>
+                <div class="map-box">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2238.164344155167!2d14.162758177309995!3d56.05051991834606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465305d46e8f95b5%3A0xe64a96a27e1e9b0!2sgr%C3%B6nevi%20ip!5e0!3m2!1ssv!2sse!4v1234567890" width="100%" height="200" style="border:none;border-radius:12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
-                <div class="cd-label" id="countdown-rubrik">Nedräkning</div>
-                <div class="cd-clock" id="countdown-display">00d 00t 00m 00s</div>
             </div>
 
-            <div class="panel map-card reveal">
-                <h3>📍 Grönevi IP</h3>
-                <div class="map-address">Hemmaplan • Näsby, Kristianstad</div>
-                <div class="map-box">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2238.164344155167!2d14.162758177309995!3d56.05051991834606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4654035626eb45bb%3A0xc6cb697e07663e8a!2sGr%C3%B6nevi%20Idrottsplats!5e0!3m2!1ssv!2sse!4v1716675000000!5m2!1ssv!2sse" style="width:100%; height:100%; border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-                
-                <div class="weather-module">
-                    <div class="weather-info">
-                        <span class="weather-title">Aktuellt väder på plats</span>
-                        <span class="weather-data" id="weather-data">Hämtar data...</span>
+            <!-- Weather Card -->
+            <div class="sidebar-card weather-card reveal-right">
+                <div class="card-icon">🌤️</div>
+                <h3>Väder på plats</h3>
+                <div class="weather-display">
+                    <div class="weather-temp" id="weather-data">Hämtar...</div>
+                    <div class="weather-animation">
+                        <div class="cloud"></div>
+                        <div class="cloud"></div>
                     </div>
-                    <div class="weather-icon">☁️</div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="sidebar-card stats-card reveal-right">
+                <div class="card-icon">⚽</div>
+                <h3>Säsongen 2026</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-matches">--</span>
+                        <span class="stat-label">Matcher</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-teams">4</span>
+                        <span class="stat-label">Lag</span>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- FOOTER -->
+    <footer class="footer fade-in">
+        <p>&copy; 2026 Rinken FC. Alla rättigheter förbehållna.</p>
+        <p class="footer-subtitle">Matchcenter powered by Rinken FC</p>
+    </footer>
 </body>
 </html>
