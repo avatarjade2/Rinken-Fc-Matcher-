@@ -1,8 +1,40 @@
 const lagData = [
-    { namn: "Pojkar 2015", widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=372619", matcher: [ { tidsstampel: "2026-05-31T17:00:00", text: "Rinken FC vit - Vinnö IF", info: "Söndag 31 maj kl. 17:00 (Hemma)" }, { tidsstampel: "2026-05-31T18:15:00", text: "Rinken FC svart - Wä IF orange", info: "Söndag 31 maj kl. 18:15 (Hemma)" }, { tidsstampel: "2026-06-07T10:30:00", text: "Åsums BK vit - Rinken FC svart", info: "Söndag 7 juni kl. 10:30 (Borta)" } ] },
-    { namn: "Herrar Senior", widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=375895", matcher: [ { tidsstampel: "2026-06-03T19:00:00", text: "Rinken FC vs Venestads IF", info: "Onsdag 3 juni kl. 19:00 (Hemma)" } ] },
-    { namn: "Pojkar 9 år", widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=377337", matcher: [ { tidsstampel: "2026-05-30T10:00:00", text: "Rinken FC P9 vs Wä IF", info: "Lördag 30 maj kl. 10:00 (Hemma)" } ] },
-    { namn: "Flickor 10 år", widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=372611", matcher: [ { tidsstampel: "2026-05-31T11:00:00", text: "Åhus Horna BK vs Rinken FC", info: "Söndag 31 maj kl. 11:00 (Borta)" } ] }
+    { 
+        namn: "Pojkar 2015", 
+        widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=372619", 
+        matcher: [ 
+            { tidsstampel: "2026-05-31T17:00:00", text: "Rinken FC vit - Vinnö IF", info: "Säsongens första match" },
+            { tidsstampel: "2026-06-07T17:00:00", text: "Rinken FC vit - Örby IF", info: "Hemmaplan" },
+            { tidsstampel: "2026-06-14T19:00:00", text: "Veberöd IF - Rinken FC vit", info: "Borta" }
+        ]
+    },
+    { 
+        namn: "Herrar Senior", 
+        widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=375895", 
+        matcher: [ 
+            { tidsstampel: "2026-06-03T19:00:00", text: "Rinken FC vs Venestads IF", info: "Serie-A match" },
+            { tidsstampel: "2026-06-10T19:00:00", text: "Malmö FF U23 - Rinken FC", info: "Borta" },
+            { tidsstampel: "2026-06-17T19:00:00", text: "Rinken FC vs Lund BK", info: "Hemmaplan" }
+        ]
+    },
+    { 
+        namn: "Pojkar 9 år", 
+        widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=377337", 
+        matcher: [ 
+            { tidsstampel: "2026-05-30T10:00:00", text: "Rinken FC P9 vs Wä IF", info: "Tränings- och cupmatcher" },
+            { tidsstampel: "2026-06-06T10:00:00", text: "Åhus Horna BK vs Rinken FC P9", info: "Borta" },
+            { tidsstampel: "2026-06-13T10:00:00", text: "Rinken FC P9 vs Bräkne-Hoby IF", info: "Hemmaplan" }
+        ]
+    },
+    { 
+        namn: "Flickor 10 år", 
+        widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=372611", 
+        matcher: [ 
+            { tidsstampel: "2026-05-31T11:00:00", text: "Åhus Horna BK vs Rinken FC", info: "Cupmatch" },
+            { tidsstampel: "2026-06-07T11:00:00", text: "Rinken FC vs Wä IF", info: "Hemmaplan" },
+            { tidsstampel: "2026-06-14T11:00:00", text: "Rinken FC vs Lund BK", info: "Hemmaplan" }
+        ]
+    }
 ];
 
 let nuvarandeIndex = 0;
@@ -22,18 +54,28 @@ function hittaNarmasteLagIndex() {
     for (let i = 0; i < lagData.length; i++) {
         const nastaMatch = finnNastaMatchForLag(lagData[i]);
         const avstand = new Date(nastaMatch.tidsstampel).getTime() - nu;
-        if (avstand > 0 && avstand < minstaAvstand) { minstaAvstand = avstand; narmasteIndex = i; }
+        if (avstand > 0 && avstand < minstaAvstand) { 
+            minstaAvstand = avstand; 
+            narmasteIndex = i; 
+        }
     }
     return narmasteIndex;
 }
 
-function nastaLag() { nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length; uppdateraSidan(); }
-function forraLag() { nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length; uppdateraSidan(); }
+function nastaLag() { 
+    nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length; 
+    uppdateraSidan(); 
+}
+
+function forraLag() { 
+    nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length; 
+    uppdateraSidan(); 
+}
 
 function startaNedrakning(matchDatumStr) {
     clearInterval(countdownInterval);
-    const display = document.getElementById('countdown-display');
-    const rubrik = document.getElementById('countdown-rubrik');
+    const display = document.getElementById('countdown-display-hero');
+    const rubrik = document.getElementById('countdown-rubrik-hero');
     const matchTid = new Date(matchDatumStr).getTime();
 
     function mathKlocka() {
@@ -56,12 +98,24 @@ function startaNedrakning(matchDatumStr) {
 
 function uppdateraSidan() {
     const lag = lagData[nuvarandeIndex];
-    document.getElementById('lag-namn').innerText = lag.namn;
+    
+    // Update hero team name
+    document.getElementById('lag-namn-hero').innerText = lag.namn;
+    
     const aktuellMatch = finnNastaMatchForLag(lag);
-    document.getElementById('match-aktuella-lag').innerText = aktuellMatch.text;
-    document.getElementById('match-klockslag').innerText = aktuellMatch.info;
+    
+    // Update hero match info
+    document.getElementById('match-aktuella-lag-hero').innerText = aktuellMatch.text;
+    document.getElementById('match-klockslag-hero').innerText = aktuellMatch.info;
+    
+    // Start countdown
     startaNedrakning(aktuellMatch.tidsstampel);
 
+    // Update stats
+    const totalMatches = lagData[nuvarandeIndex].matcher.length;
+    document.getElementById('stat-matches').innerText = totalMatches;
+
+    // Update widget with iframe content
     const srcDocContent = `
         <html lang="sv">
         <head>
@@ -89,16 +143,14 @@ async function hamtaVader() {
     }
 }
 
-// Hanterar in-scrollningsanimationer (Intersection Observer)
+// Intersection Observer for scroll animations
 function initieraAnimationer() {
-    const reveals = document.querySelectorAll('.reveal');
+    const reveals = document.querySelectorAll('.reveal-left, .reveal-right, .fade-in');
+    
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
+        entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                // Skapar en liten fördröjning på varje panel så de laddas in efter varandra (stagger-effekt)
-                setTimeout(() => {
-                    entry.target.classList.add('active');
-                }, index * 100); 
+                // Element is in viewport, it already has animation via CSS
                 observer.unobserve(entry.target);
             }
         });
@@ -109,10 +161,13 @@ function initieraAnimationer() {
     });
 }
 
-// Startar upp allt när sidan har laddats klart
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     nuvarandeIndex = hittaNarmasteLagIndex();
     uppdateraSidan();
     hamtaVader();
     initieraAnimationer();
+    
+    // Refresh weather every 10 minutes
+    setInterval(hamtaVader, 600000);
 });
