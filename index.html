@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="sv"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <title>Rinken FC - Officiellt Matchcenter</title>
+    <!-- Länkar till din nya designfil -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Länkar till din nya logikfil, 'defer' ser till att sidan laddas innan scriptet körs -->
+    <script src="script.js" defer></script>
+</head>
+<body> 
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="club-logo-placeholder">RFC</div>
+                <h1>Rinken FC</h1>
+            </div>
+            <div class="header-status">Matchcenter Live</div>
+        </div>
+    </header>
 
+    <main class="main-layout">
+        <div class="content-main">
+            <div class="lag-styre reveal">
+                <button class="nav-btn" onclick="forraLag()">◀</button>
+                <div class="lag-titel-display" id="lag-namn">-</div>
+                <button class="nav-btn" onclick="nastaLag()">▶</button>
+            </div>
+            
+            <div class="panel reveal">
+                <div class="panel-titel">📅 Aktuella Matcher & Serietabell</div>
+                <div class="widget-box">
+                    <iframe id="match-widget" src=""></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-sidebar">
+            <div class="panel countdown-card reveal">
+                <div class="panel-titel" style="color: #e11d48;">⏰ Nästa Match</div>
+                <div class="next-match-details">
+                    <div class="match-teams" id="match-aktuella-lag">Laddar match...</div>
+                    <div class="match-time-meta" id="match-klockslag">-</div>
+                </div>
+                <div class="cd-label" id="countdown-rubrik">Nedräkning</div>
+                <div class="cd-clock" id="countdown-display">00d 00t 00m 00s</div>
+            </div>
+
+            <div class="panel map-card reveal">
+                <h3>📍 Grönevi IP</h3>
+                <div class="map-address">Hemmaplan • Näsby, Kristianstad</div>
+                <div class="map-box">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2238.164344155167!2d14.162758177309995!3d56.05051991834606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4654035626eb45bb%3A0xc6cb697e07663e8a!2sGr%C3%B6nevi%20Idrottsplats!5e0!3m2!1ssv!2sse!4v1716675000000!5m2!1ssv!2sse" style="width:100%; height:100%; border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                
+                <div class="weather-module">
+                    <div class="weather-info">
+                        <span class="weather-title">Aktuellt väder på plats</span>
+                        <span class="weather-data" id="weather-data">Hämtar data...</span>
+                    </div>
+                    <div class="weather-icon">☁️</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
