@@ -2,63 +2,47 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
     <title>Rinken FC - Matchcenter</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-
     <header>
-        <div class="header-content">
-            <div class="logo-area">
-                <div class="logo-text">
-                    <div class="logo-main">Rinken FC</div>
-                </div>
-            </div>
-            <nav class="nav-menu">
-                <a href="#hem">Hem</a>
-                <a href="#om">Om oss</a>
-            </nav>
-        </div>
+        <div class="logo-main">Rinken FC</div>
+        <nav class="nav-menu">
+            <a href="#hem">Hem</a>
+            <a href="#om">Om oss</a>
+        </nav>
     </header>
 
     <main>
-        <section class="hero-section" id="hem">
-            <h1>Följ <span class="accent-text">Rinken FC</span></h1>
+        <section id="hem" class="hero-section">
+            <h1>Följ <span style="color:var(--brand-red)">Rinken FC</span></h1>
             <div class="lag-selector">
                 <button class="nav-btn" onclick="forraLag()">←</button>
-                <div class="lag-display">
-                    <div class="lag-namn" id="lag-namn">Laddar...</div>
-                </div>
+                <div id="lag-namn">Laddar...</div>
                 <button class="nav-btn" onclick="nastaLag()">→</button>
             </div>
         </section>
 
-        <section class="bento-grid" id="matcher">
-            <div class="bento-card widget-card">
-                <h2>Senaste Matcher</h2>
-                <div class="widget-box">
-                    <iframe id="match-widget"></iframe>
-                </div>
+        <section class="bento-card">
+            <h2>Senaste matcher</h2>
+            <div class="widget-box">
+                <iframe id="match-widget"></iframe>
             </div>
         </section>
 
-        <section id="om" class="bento-card">
+        <section id="om" class="bento-card" style="margin-top:20px;">
             <h2>Om oss</h2>
-            <p>Rinken FC arbetar för gemenskap och fotbollsglädje i Kristianstad.</p>
+            <p>Rinken FC – gemenskap och fotbollsglädje i Kristianstad.</p>
         </section>
     </main>
 
     <footer>
-        <div class="footer-content">
-            <p>© 2026 Rinken FC</p>
-            <div class="social-links">
-                <a href="https://instagram.com/dittkonto" target="_blank">Följ oss på Instagram</a>
-            </div>
+        <p>© 2026 Rinken FC</p>
+        <div class="social-links">
+            <a href="https://instagram.com/dittkonto">Följ oss på Instagram</a>
         </div>
     </footer>
-
 </body>
 </html>
