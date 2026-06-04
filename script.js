@@ -5,19 +5,25 @@ async function laddaAllt() {
     const url = "https://script.google.com/macros/s/AKfycbxS3rXlLXfCO3Co1iwQJtu6l3L_6rVWbQiImAKrkdJhJUQ2eRBoXzxNNvoy8cU7j5-c/exec?action=matcher";
     
     try {
+        console.log("Hämtar data från Google Apps Script...");
         const response = await fetch(url);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        lagData = data.lag;
+        console.log("Data mottagen:", data);
+        
+        lagData = data.lag || [];
         
         if (lagData.length > 0) {
+            console.log(`${lagData.length} lag hittade!`);
             uppdateraSidan();
             visaStatus("System Online", true);
             setupAnimations();
         } else {
+            console.warn("Ingen lag-data hittad");
             visaStatus("Ingen data hittad", false);
         }
     } catch (error) {
@@ -27,21 +33,34 @@ async function laddaAllt() {
 }
 
 function uppdateraSidan() {
-    if (lagData.length === 0) return;
+    if (lagData.length === 0) {
+        console.warn("Ingen data att uppdatera");
+        return;
+    }
     
     const lag = lagData[nuvarandeIndex];
+    console.log("Uppdaterar sida för lag:", lag);
     
     // Uppdatera lagnamn
-    document.getElementById('lag-namn').innerText = lag.namn;
+    const lagNamnEl = document.getElementById('lag-namn');
+    if (lagNamnEl) {
+        lagNamnEl.innerText = lag.namn || "Okänt lag";
+    }
     
     // Uppdatera iframe med widget-URL
     const iframe = document.getElementById('match-widget');
-    iframe.src = lag.widgetUrl;
+    if (iframe && lag.widgetUrl) {
+        console.log("Sätter iframe src till:", lag.widgetUrl);
+        iframe.src = lag.widgetUrl;
+    } else {
+        console.error("Kunde inte uppdatera iframe - widgetUrl saknas:", lag);
+    }
 }
 
 function nastaLag() {
     if (lagData.length > 0) {
         nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length;
+        console.log("Nästa lag, index:", nuvarandeIndex);
         uppdateraSidan();
     }
 }
@@ -49,6 +68,7 @@ function nastaLag() {
 function forraLag() {
     if (lagData.length > 0) {
         nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length;
+        console.log("Föregående lag, index:", nuvarandeIndex);
         uppdateraSidan();
     }
 }
@@ -58,37 +78,62 @@ function visaStatus(text, isOnline) {
     const statusPulse = document.getElementById('status-pulse');
     const statusContainer = document.getElementById('system-status');
     
-    statusText.innerText = text;
+    if (statusText) statusText.innerText = text;
     
-    if (isOnline) {
-        statusPulse.className = 'pulse pulse-green';
-        statusContainer.classList.add('is-live');
-    } else {
-        statusPulse.className = 'pulse pulse-red';
-        statusContainer.classList.remove('is-live');
+    if (statusPulse) {
+        if (isOnline) {
+            statusPulse.className = 'pulse pulse-green';
+        } else {
+            statusPulse.className = 'pulse pulse-red';
+        }
     }
+    
+    if (statusContainer) {
+        if (isOnline) {
+            statusContainer.classList.add('is-live');
+        } else {
+            statusContainer.classList.remove('is-live');
+        }
+    }
+    
+    console.log(`Status: ${text} (${isOnline ? 'Online' : 'Offline'})`);
 }
 
 function setupAnimations() {
-    // Intersection Observer för scroll-animationer
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-revealed');
-                observer.unobserve(entry.target);
-            }
+    try {
+        // Intersection Observer för scroll-animationer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        const elementsToAnimate = document.querySelectorAll('.reveal-up, .reveal-scale');
+        console.log(`Sätter upp animationer för ${elementsToAnimate.length} element`);
+        
+        elementsToAnimate.forEach(el => {
+            observer.observe(el);
         });
-    }, observerOptions);
-    
-    document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => {
-        observer.observe(el);
-    });
+    } catch (animError) {
+        console.error("Fel vid setup av animationer:", animError);
+    }
 }
 
 // Läs in allt när DOM är klar
-document.addEventListener('DOMContentLoaded', laddaAllt);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("DOM innehål laddat!");
+        laddaAllt();
+    });
+} else {
+    console.log("DOM redan laddat, startar laddning...");
+    laddaAllt();
+}
