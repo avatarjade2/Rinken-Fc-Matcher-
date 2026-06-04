@@ -1,96 +1,90 @@
+// Konfiguration för Google Apps Script - Byt ut denna länk mot din riktiga
+const API_URL = "DIN_URL_HÄR"; 
+
 let lagData = [];
 let nuvarandeIndex = 0;
-let instaLink = "";
+let countdownInterval;
 
-async function laddaAllt() {
-    const url = "https://script.google.com/macros/s/AKfycbxS3rXlLXfCO3Co1iwQJtu6l3L_6rVWbQiImAKrkdJhJUQ2eRBoXzxNNvoy8cU7j5-c/exec?action=matcher";
+// Hämta data från Google
+async function laddaData() {
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(API_URL);
         const data = await response.json();
-        
-        instaLink = data.insta || "";
-        lagData = data.lag || [];
-        
-        if (lagData.length > 0) {
-            uppdateraSidan();
-            visaStatus("System Online", true);
-            setupAnimations();
-        } else {
-            visaStatus("Ingen data hittad", false);
-        }
-    } catch (error) {
-        console.error("Kunde inte hämta data:", error);
-        visaStatus("Anslutningsfel", false);
+        lagData = data.lag;
+        nuvarandeIndex = hittaNarmasteLagIndex();
+        uppdateraSidan();
+        initieraAnimationer();
+    } catch (err) {
+        console.error("Kunde inte hämta data:", err);
     }
 }
 
 function uppdateraSidan() {
-    if (lagData.length === 0) return;
     const lag = lagData[nuvarandeIndex];
+    document.getElementById('lag-namn').innerText = lag.namn;
     
-    // Uppdatera namn
-    const lagNamnEl = document.getElementById('lag-namn');
-    if (lagNamnEl) lagNamnEl.innerText = lag.namn || "Okänt lag";
-    
-    // Uppdatera widget via srcdoc för att undvika konflikter
-    const widgetContainer = document.getElementById('widget-container');
-    if (widgetContainer) {
-        widgetContainer.innerHTML = `<iframe id="match-widget" srcdoc="<html><body style='margin:0;'><script src='${lag.widgetUrl}'></script></body></html>" style="width:100%; height:600px; border:none;"></iframe>`;
-    }
-    
-    uppdateraInstagram();
+    // Uppdatera widget via srcdoc (säkert sätt)
+    const iframe = document.getElementById('match-widget');
+    iframe.srcdoc = `<html><body><script src="${lag.widgetSrc}"></script></body></html>`;
+
+    // Uppdatera match-detaljer och nedräkning
+    const aktuellMatch = finnNastaMatchForLag(lag);
+    document.getElementById('match-aktuella-lag').innerText = aktuellMatch.text;
+    document.getElementById('match-klockslag').innerText = aktuellMatch.info;
+    startaNedrakning(aktuellMatch.tidsstampel);
 }
 
-function uppdateraInstagram() {
-    const container = document.getElementById('instagram-container');
-    if (!container) return;
-    
-    if (!instaLink) {
-        container.innerHTML = '<p style="text-align: center; color: #64748b;">Ingen Instagram-länk konfigurerad</p>';
-        return;
+function finnNastaMatchForLag(lag) {
+    const nu = new Date().getTime();
+    let framtidaMatcher = lag.matcher.filter(m => new Date(m.tidsstampel).getTime() > nu);
+    framtidaMatcher.sort((a, b) => new Date(a.tidsstampel).getTime() - new Date(b.tidsstampel).getTime());
+    return framtidaMatcher.length > 0 ? framtidaMatcher[0] : lag.matcher[lag.matcher.length - 1];
+}
+
+function startaNedrakning(matchDatumStr) {
+    clearInterval(countdownInterval);
+    const display = document.getElementById('countdown-display');
+    const rubrik = document.getElementById('countdown-rubrik');
+    const matchTid = new Date(matchDatumStr).getTime();
+
+    function updateTimer() {
+        const avstand = matchTid - new Date().getTime();
+        if (avstand < 0) {
+            rubrik.innerText = "Status";
+            display.innerText = "Match spelad";
+            return;
+        }
+        const d = Math.floor(avstand / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+        const t = Math.floor((avstand % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const m = Math.floor((avstand % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        const s = Math.floor((avstand % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        display.innerText = `${d}:${t}:${m}:${s}`;
     }
-    
-    container.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${instaLink}" data-instgrm-version="14" style="width:100%; border:0; margin:0;"></blockquote>`;
-    
-    // Ladda om Instagram-scriptet
-    if (window.instgrm) {
-        window.instgrm.Embeds.process();
-    }
+    updateTimer();
+    countdownInterval = setInterval(updateTimer, 1000);
 }
 
 // Navigering
-function nastaLag() {
-    nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length;
-    uppdateraSidan();
+function nastaLag() { nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length; uppdateraSidan(); }
+function forraLag() { nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length; uppdateraSidan(); }
+
+// Animationer & Väder
+async function hamtaVader() {
+    try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=56.0465&longitude=14.1678&current_weather=true');
+        const data = await res.json();
+        document.getElementById('weather-data').innerText = `${Math.round(data.current_weather.temperature)}°C`;
+    } catch (e) { document.getElementById('weather-data').innerText = "--°C"; }
 }
 
-function forraLag() {
-    nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length;
-    uppdateraSidan();
-}
-
-// Status & Animationer
-function visaStatus(text, isOnline) {
-    const statusText = document.getElementById('status-text');
-    const statusContainer = document.getElementById('system-status');
-    if (statusText) statusText.innerText = text;
-    if (statusContainer) {
-        statusContainer.classList.toggle('is-live', isOnline);
-    }
-}
-
-function setupAnimations() {
+function initieraAnimationer() {
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-revealed');
-                observer.unobserve(entry.target);
-            }
-        });
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-revealed'); });
     }, { threshold: 0.1 });
-    
     document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
 }
 
-document.addEventListener('DOMContentLoaded', laddaAllt);
+document.addEventListener('DOMContentLoaded', () => {
+    laddaData();
+    hamtaVader();
+});
