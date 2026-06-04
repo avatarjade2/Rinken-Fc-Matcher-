@@ -1,167 +1,64 @@
-Här är den kompletta HTML-koden för din webbplats, som kombinerar din nya "Bento"-design med all den funktionalitet du har byggt upp.
-
-Denna kod är färdig att använda. Se till att filerna style.css och script.js ligger i samma mapp som denna fil.
-
-HTML
 <!DOCTYPE html>
-<html lang="sv"> 
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
-    <meta name="description" content="Rinken FC - Det officiella matchcentret för alla våra lag med resultat, schema och live-uppdateringar.">
-    <title>Rinken FC - Officiellt Matchcenter</title>
+    <title>Rinken FC - Matchcenter</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-<body> 
+<body>
+
     <header>
         <div class="header-content">
             <div class="logo-area">
-                <div class="club-logo">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="45" fill="#e11d48"/>
-                        <text x="50" y="62" font-size="55" font-weight="900" text-anchor="middle" fill="white" font-family="system-ui">R</text>
-                    </svg>
-                </div>
                 <div class="logo-text">
                     <div class="logo-main">Rinken FC</div>
-                    <div class="logo-sub">Match Center</div>
                 </div>
             </div>
-            <nav class="nav-menu" role="navigation">
-                <a href="#hem" class="nav-link active" data-section="hem">Hem</a>
-                <a href="#matcher" class="nav-link" data-section="matcher">Matcher</a>
-                <a href="#om" class="nav-link" data-section="om">Om oss</a>
+            <nav class="nav-menu">
+                <a href="#hem">Hem</a>
+                <a href="#om">Om oss</a>
             </nav>
-            <div class="header-status" role="status">
-                <span class="pulse"></span>
-                <span>Live Aktiv</span>
-            </div>
         </div>
     </header>
 
     <main>
-        <section class="hero-section reveal-scale" id="hem">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Följ
-                    <span class="text-gradient">Rinken FC</span>
-                    <br>i <span class="accent-text">realtid</span>
-                </h1>
-                <p class="hero-subtitle">Det officiella matchcentret för alla våra lag. Resultat, schema och live-uppdateringar direkt på en plats.</p>
-            </div>
-            
-            <div class="lag-selector reveal-up" style="--delay: 0.2s">
-                <button class="nav-btn" onclick="forraLag()" aria-label="Föregående lag">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
+        <section class="hero-section" id="hem">
+            <h1>Följ <span class="accent-text">Rinken FC</span></h1>
+            <div class="lag-selector">
+                <button class="nav-btn" onclick="forraLag()">←</button>
                 <div class="lag-display">
-                    <div class="lag-label">Nuvarande lag</div>
                     <div class="lag-namn" id="lag-namn">Laddar...</div>
                 </div>
-                <button class="nav-btn" onclick="nastaLag()" aria-label="Nästa lag">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
+                <button class="nav-btn" onclick="nastaLag()">→</button>
             </div>
         </section>
 
         <section class="bento-grid" id="matcher">
-            <div class="bento-card widget-card reveal-up" style="--delay: 0.3s">
-                <div class="card-header">
-                    <span class="badge">Tabell & Resultat</span>
-                    <h2>Senaste Resultaten</h2>
-                </div>
+            <div class="bento-card widget-card">
+                <h2>Senaste Matcher</h2>
                 <div class="widget-box">
-                    <iframe id="match-widget" title="Match widget - Tabell och resultat"></iframe>
+                    <iframe id="match-widget"></iframe>
                 </div>
-            </div>
-
-            <div class="bento-sidebar">
-                
-                <div class="bento-card highlight-card reveal-up" style="--delay: 0.4s">
-                    <div class="card-header-alt">
-                        <span class="badge badge-red">Nästa Match</span>
-                    </div>
-                    <div class="match-details">
-                        <div class="match-info-large" id="match-aktuella-lag">Laddar...</div>
-                        <div class="match-time-sub" id="match-klockslag">-</div>
-                    </div>
-                    
-                    <div class="countdown-wrapper">
-                        <div class="cd-label" id="countdown-rubrik">Nedräkning</div>
-                        <div class="cd-clock" id="countdown-display">00:00:00:00</div>
-                    </div>
-                </div>
-
-                <div class="bento-card location-card reveal-up" style="--delay: 0.5s">
-                    <div class="location-header">
-                        <div class="location-info">
-                            <h3>Grönevi IP</h3>
-                            <p class="sub-text">Näsby, Kristianstad</p>
-                        </div>
-                        <div class="weather-pill" id="weather-data">--°C</div>
-                    </div>
-                    <div class="map-box">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2235.485299480119!2d14.164506377312368!3d56.04655457361834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465406c596041a7d%3A0x6d9f8c6b7582d18!2sGr%C3%B6nevi%20IP!5e0!3m2!1ssv!2sse!4v1717542400000!5m2!1ssv!2sse" allowfullscreen="" loading="lazy" title="Grönevi IP karta"></iframe>
-                    </div>
-                </div>
-
             </div>
         </section>
 
-        <section class="info-section reveal-up" style="--delay: 0.6s" id="om">
-            <div class="info-container">
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v8m4-4H8M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-                    </div>
-                    <h3>Realtidsuppdateringar</h3>
-                    <p>Följ alla matcher live och få omedelbar uppdateringar på resultat och händelser.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54h2.04l2.25 2.71h1.97L13.49 12h2.04l-2.75-3.54z"/></svg>
-                    </div>
-                    <h3>Alla lag på ett ställe</h3>
-                    <p>Hantera matcher för alla åldersgrupper från pojkar till senior på samma plats.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>
-                    </div>
-                    <h3>Plats & Väder</h3>
-                    <p>Se var matchen spelas och aktuellt väder för matchdagen.</p>
-                </div>
-            </div>
+        <section id="om" class="bento-card">
+            <h2>Om oss</h2>
+            <p>Rinken FC arbetar för gemenskap och fotbollsglädje i Kristianstad.</p>
         </section>
     </main>
 
     <footer>
         <div class="footer-content">
-            <div class="footer-section">
-                <h4>Rinken FC</h4>
-                <p>Det lokala fotbollsföreninget för alla åldersgrupper i Kristianstad. Vi arbetar för att ge barn och ungdomar möjligheten att spela fotboll och utvecklas både på och utanför planen.</p>
+            <p>© 2026 Rinken FC</p>
+            <div class="social-links">
+                <a href="https://instagram.com/dittkonto" target="_blank">Följ oss på Instagram</a>
             </div>
-            <div class="footer-section">
-                <h4>Snabblänkar</h4>
-                <ul>
-                    <li><a href="#matcher">Matcher</a></li>
-                    <li><a href="#om">Om oss</a></li>
-                    <li><a href="mailto:info@rinkenfc.se">Kontakt</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Följ oss</h4>
-                <ul>
-                    <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-                    <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Rinken FC. Alla rättigheter förbehållna.</p>
         </div>
     </footer>
+
 </body>
 </html>
