@@ -1,157 +1,59 @@
-const lagData = [
-    { namn: "Pojkar 2015", widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=372619", matcher: [ { tidsstampel: "2026-05-31T17:00:00", text: "Rinken FC vit - Vinnö IF", info: "Söndag 31 maj kl. 17:00 (Hemma)" }, { tidsstampel: "2026-05-31T18:15:00", text: "Rinken FC svart - Wä IF orange", info: "Söndag 31 maj kl. 18:15 (Hemma)" }, { tidsstampel: "2026-06-07T10:30:00", text: "Åsums BK vit - Rinken FC svart", info: "Söndag 7 juni kl. 10:30 (Borta)" } ] },
-    { namn: "Herrar Senior", widgetSrc: "https://www.skaneboll.se/widget.aspx?scr=teamresult&flid=375895", matcher: [ { tidsstampel: "2026-06-03T19:00:00", text: "Rinken FC vs Venestads IF", info: "Onsdag 3 juni kl. 19:00 (Hemma)" } ] },
-    { namn: "Pojkar 9 år", widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=377337", matcher: [ { tidsstampel: "2026-05-30T10:00:00", text: "Rinken FC P9 vs Wä IF", info: "Lördag 30 maj kl. 10:00 (Hemma)" } ] },
-    { namn: "Flickor 10 år", widgetSrc: "https://www.svenskfotboll.se/widget.aspx?scr=teamresult&flid=372611", matcher: [ { tidsstampel: "2026-05-31T11:00:00", text: "Åhus Horna BK vs Rinken FC", info: "Söndag 31 maj kl. 11:00 (Borta)" } ] }
-];
-
+// Globala variabler
+let lagData = []; 
 let nuvarandeIndex = 0;
 let countdownInterval;
 
-function finnNastaMatchForLag(lag) {
-    const nu = new Date().getTime();
-    let framtidaMatcher = lag.matcher.filter(m => new Date(m.tidsstampel).getTime() > nu);
-    framtidaMatcher.sort((a, b) => new Date(a.tidsstampel).getTime() - new Date(b.tidsstampel).getTime());
-    return framtidaMatcher.length > 0 ? framtidaMatcher[0] : lag.matcher[lag.matcher.length - 1];
-}
-
-function hittaNarmasteLagIndex() {
-    const nu = new Date().getTime();
-    let narmasteIndex = 0;
-    let minstaAvstand = Infinity;
-    for (let i = 0; i < lagData.length; i++) {
-        const nastaMatch = finnNastaMatchForLag(lagData[i]);
-        const avstand = new Date(nastaMatch.tidsstampel).getTime() - nu;
-        if (avstand > 0 && avstand < minstaAvstand) { minstaAvstand = avstand; narmasteIndex = i; }
-    }
-    return narmasteIndex;
-}
-
-function nastaLag() { nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length; uppdateraSidan(); triggersAnimations(); }
-function forraLag() { nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length; uppdateraSidan(); triggersAnimations(); }
-
-function uppdateraLiveStatus(matchDatumStr) {
-    const nu = new Date().getTime();
-    const matchTid = new Date(matchDatumStr).getTime();
-    const tvaTimmar = 2 * 60 * 60 * 1000; // Antar att en match pågår max 2 timmar
+// 1. HÄMTA DATA FRÅN GOOGLE SHEETS
+async function laddaAllt() {
+    const url = "https://script.google.com/macros/s/AKfycby6J9yzjMNH6sC1S-C3vcOOnnHtmeIqkcAxAvo2fUOeIouJBbTPTYierdzqI7WV_tVy/exec?action=matcher";
     
-    const statusBox = document.getElementById('system-status');
-    const pulse = document.getElementById('status-pulse');
-    const text = document.getElementById('status-text');
-    
-    // Rensa gamla klasser
-    pulse.classList.remove('pulse-green', 'pulse-red');
-    
-    if (nu >= matchTid && nu <= matchTid + tvaTimmar) {
-        // Matchen pågår just nu!
-        pulse.classList.add('pulse-red');
-        text.innerText = "Match Pågår";
-        statusBox.classList.add('is-live');
-    } else {
-        // Online men ingen pågående match
-        pulse.classList.add('pulse-green');
-        text.innerText = "System Online";
-        statusBox.classList.remove('is-live');
-    }
-}
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Här mappar vi om datan från Google till ditt format
+        // Vi lägger till en tom "matcher"-array för att din logik ska fungera
+        lagData = data.lag.map(lag => ({
+            namn: lag.namn,
+            widgetSrc: lag.scriptTag.match(/src="([^"]*)"/)[1], // Extraherar URL från <script src="...">
+            matcher: [] // OBS: Om du vill ha automatiska matcher senare lägger vi till logik här
+        }));
 
-function startaNedrakning(matchDatumStr) {
-    clearInterval(countdownInterval);
-    const display = document.getElementById('countdown-display');
-    const rubrik = document.getElementById('countdown-rubrik');
-    const matchTid = new Date(matchDatumStr).getTime();
-
-    function mathKlocka() {
-        const avstand = matchTid - new Date().getTime();
-        uppdateraLiveStatus(matchDatumStr); // Kolla live-status varje sekund
-
-        if (avstand < 0) {
-            rubrik.innerText = "Spelad / Pågår";
-            display.innerText = "00:00:00:00";
-            return;
+        if (lagData.length > 0) {
+            nuvarandeIndex = hittaNarmasteLagIndex();
+            uppdateraSidan();
+            setTimeout(initieraAnimationer, 100);
         }
-        rubrik.innerText = "Avspark om";
-        const d = Math.floor(avstand / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-        const t = Math.floor((avstand % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-        const m = Math.floor((avstand % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-        const s = Math.floor((avstand % (1000 * 60)) / 1000).toString().padStart(2, '0');
-        display.innerText = `${d}:${t}:${m}:${s}`;
+    } catch (error) {
+        console.error("Kunde inte hämta data:", error);
     }
-    mathKlocka();
-    countdownInterval = setInterval(mathKlocka, 1000);
 }
 
+// ... Behåll dina funktioner: finnNastaMatchForLag, hittaNarmasteLagIndex, nastaLag, forraLag ...
+// ... Behåll uppdateraLiveStatus, startaNedrakning, hamtaVader, initieraAnimationer ...
+
+// 2. DIN UPPDATERADE uppdateraSidan()
 function uppdateraSidan() {
     const lag = lagData[nuvarandeIndex];
     document.getElementById('lag-namn').innerText = lag.namn;
-    const aktuellMatch = finnNastaMatchForLag(lag);
     
-    document.getElementById('match-aktuella-lag').innerText = aktuellMatch.text;
-    document.getElementById('match-klockslag').innerText = aktuellMatch.info;
-    
-    // Hantera färg för Hemma / Borta
-    const matchCard = document.getElementById('match-card');
-    const matchTypBadge = document.getElementById('match-typ-badge');
-    
-    if (aktuellMatch.info.toLowerCase().includes('borta')) {
-        matchCard.classList.add('away-match');
-        matchTypBadge.innerText = "Bortamatch";
-    } else {
-        matchCard.classList.remove('away-match');
-        matchTypBadge.innerText = "Hemmamatch";
-    }
-
-    startaNedrakning(aktuellMatch.tidsstampel);
-
+    // Om du har match-logik (nedräkning) krävs match-data i objektet.
+    // Här använder vi din befintliga iframe-logik:
     const srcDocContent = `
         <html lang="sv">
-        <head>
-            <style>
-                body { margin: 0; padding: 0; background-color: transparent; font-family: -apple-system, system-ui, sans-serif; }
-            </style>
-        </head>
-        <body><script type="text/javascript" src="${lag.widgetSrc}"><\/script></body>
+        <head><style>body { margin: 0; padding: 0; background-color: transparent; }</style></head>
+        <body><script src="${lag.widgetSrc}"></script></body>
         </html>
     `;
     document.getElementById('match-widget').srcdoc = srcDocContent;
+
+    // Om match-logik saknas för de nya lagen, dölj nedräkning eller sätt standard
+    // (Behåll din kod här för att uppdatera badge/färg)
+    triggersAnimations();
 }
 
-async function hamtaVader() {
-    try {
-        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=56.0465&longitude=14.1678&current_weather=true');
-        const data = await response.json();
-        const temp = Math.round(data.current_weather.temperature);
-        document.getElementById('weather-data').innerText = `☁️ ${temp}°C`;
-    } catch (error) {
-        document.getElementById('weather-data').innerText = "--";
-    }
-}
-
-function initieraAnimationer() {
-    const elementsToReveal = document.querySelectorAll('.reveal-up, .reveal-scale');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-revealed');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-    elementsToReveal.forEach(el => observer.observe(el));
-}
-
-function triggersAnimations() {
-    const cards = document.querySelectorAll('.bento-card');
-    cards.forEach(card => {
-        card.style.transform = 'scale(0.98)';
-        setTimeout(() => { card.style.transform = ''; }, 150);
-    });
-}
-
+// Starta allt
 document.addEventListener('DOMContentLoaded', () => {
-    nuvarandeIndex = hittaNarmasteLagIndex();
-    uppdateraSidan();
+    laddaAllt();
     hamtaVader();
-    setTimeout(initieraAnimationer, 100);
 });
