@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="sv"> 
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
-    <meta name="description" content="Rinken FC - Det officiella matchcentret för alla våra lag med resultat, schema och live-uppdateringar.">
     <title>Rinken FC - Officiellt Matchcenter</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-<body> 
-    <!-- Navigation Header -->
+<body>
     <header>
         <div class="header-content">
             <div class="logo-area">
@@ -25,11 +23,6 @@
                     <div class="logo-sub">Match Center</div>
                 </div>
             </div>
-            <nav class="nav-menu" role="navigation">
-                <a href="#hem" class="nav-link active" data-section="hem">Hem</a>
-                <a href="#matcher" class="nav-link" data-section="matcher">Matcher</a>
-                <a href="#om" class="nav-link" data-section="om">Om klubben</a>
-            </nav>
             <div class="header-status" id="system-status" role="status">
                 <span class="pulse" id="status-pulse"></span>
                 <span id="status-text">System Online</span>
@@ -38,156 +31,30 @@
     </header>
 
     <main>
-        <!-- Hero Sektion -->
         <section class="hero-section reveal-scale" id="hem">
             <div class="hero-content">
-                <h1 class="hero-title">
-                    Följ
-                    <span class="text-gradient">Rinken FC</span>
-                    <br>i <span class="accent-text">realtid</span>
-                </h1>
-                <p class="hero-subtitle">Det officiella matchcentret för alla våra lag. Resultat, schema och live-uppdateringar direkt på en plats.</p>
+                <h1 class="hero-title">Följ <span class="text-gradient">Rinken FC</span><br>i <span class="accent-text">realtid</span></h1>
             </div>
-            
-            <div class="lag-selector reveal-up" style="--delay: 0.2s">
-                <button class="nav-btn" onclick="forraLag()" aria-label="Föregående lag">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
+            <div class="lag-selector reveal-up">
+                <button class="nav-btn" onclick="forraLag()" aria-label="Föregående lag">←</button>
                 <div class="lag-display">
                     <div class="lag-label">Nuvarande lag</div>
-                    <div class="lag-namn" id="lag-namn">-</div>
+                    <div class="lag-namn" id="lag-namn">Laddar...</div>
                 </div>
-                <button class="nav-btn" onclick="nastaLag()" aria-label="Nästa lag">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
+                <button class="nav-btn" onclick="nastaLag()" aria-label="Nästa lag">→</button>
             </div>
         </section>
 
-        <!-- Bento Grid Sektion -->
         <section class="bento-grid" id="matcher">
-            <!-- Stor Huvudpanel (Widget) -->
-            <div class="bento-card widget-card reveal-up" style="--delay: 0.3s">
+            <div class="bento-card widget-card reveal-up">
                 <div class="card-header">
-                    <span class="badge">Tabell & Resultat</span>
                     <h2>Senaste Resultaten</h2>
                 </div>
                 <div class="widget-box widget-styled">
-                    <iframe id="match-widget" title="Match widget - Tabell och resultat"></iframe>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="bento-sidebar">
-                
-                <!-- Nästa Match Card -->
-                <div class="bento-card highlight-card reveal-up" id="match-card" style="--delay: 0.4s">
-                    <div class="card-header-alt">
-                        <span class="badge badge-red" id="match-typ-badge">Nästa Match</span>
-                    </div>
-                    <div class="match-details">
-                        <div class="match-info-large" id="match-aktuella-lag">Laddar...</div>
-                        <div class="match-time-sub" id="match-klockslag">-</div>
-                    </div>
-                    
-                    <div class="countdown-wrapper">
-                        <div class="cd-label" id="countdown-rubrik">Nedräkning</div>
-                        <div class="cd-clock" id="countdown-display">00:00:00:00</div>
-                    </div>
-                </div>
-
-                <!-- Plats & Väder Card -->
-                <div class="bento-card location-card reveal-up" style="--delay: 0.5s">
-                    <div class="location-header">
-                        <div class="location-info">
-                            <h3>Grönevi IP</h3>
-                            <p class="sub-text">Näsby, Kristianstad</p>
-                        </div>
-                        <div class="weather-pill" id="weather-data">--°C</div>
-                    </div>
-                    <div class="map-box">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2238.164344155167!2d14.162758177309995!3d56.05051991834606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4654035626eb45bb%3A0xc6cb697e07663e8a!2sGr%C3%B6nevi%20Idrottsplats!5e0!3m2!1ssv!2sse!4v1716675000000!5m2!1ssv!2sse" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Grönevi IP karta"></iframe>
-                    </div>
-                </div>
-
-                <!-- Instagram Card -->
-                <div class="bento-card social-card reveal-up" style="--delay: 0.6s">
-                    <div class="card-header-alt" style="margin-bottom: 16px;">
-                        <span class="badge" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white;">Instagram</span>
-                    </div>
-                    <div class="ig-content">
-                        <h3>Bakom kulisserna</h3>
-                        <p>Följ vårt ungdomslag och se mer av vad som händer på och utanför planen i vardagen.</p>
-                        <a href="https://www.instagram.com/rinkenfc.ungdomslag/" target="_blank" rel="noopener noreferrer" class="ig-profile-btn">
-                            <div class="ig-avatar">R</div>
-                            <div class="ig-text-wrapper">
-                                <span class="ig-handle">@rinkenfc.ungdomslag</span>
-                                <span class="ig-action">Följ oss &rarr;</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Om oss Section -->
-        <section class="info-section reveal-up" style="--delay: 0.7s" id="om">
-            <div class="section-title">
-                <h2>Mer än bara fotboll</h2>
-                <p>Lär känna Rinken FC</p>
-            </div>
-            <div class="info-container">
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    </div>
-                    <h3>Gemenskap i fokus</h3>
-                    <p>Vi arbetar aktivt i Näsby och Gamlegården för att erbjuda en trygg och meningsfull fritid. Vårt mål är att hålla barn och unga i rörelse och borta från negativa miljöer.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    </div>
-                    <h3>En plats för alla</h3>
-                    <p>Inkludering och jämställdhet är grunden i vår förening. Vi anpassar oss efter området vi verkar i och skapar en neutral, välkomnande frizon för alla människor.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 9.36l-6.9 6.9a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4l6.9-6.9a6 6 0 0 1 9.36-7.94l-3.77 3.77a1 1 0 0 0-1.4 0z"></path></svg>
-                    </div>
-                    <h3>Utveckling & Framtid</h3>
-                    <p>Oavsett om det är via fotbollsplanen eller våra nya dansinitiativ ger vi våra unga chansen att växa, ta ansvar och bygga framtidstro tillsammans.</p>
+                    <iframe id="match-widget" title="Match widget"></iframe>
                 </div>
             </div>
         </section>
     </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Rinken FC</h4>
-                <p>En lokal idrottsförening i Kristianstad som arbetar för inkludering, glädje och gemenskap. Vi ger barn och ungdomar möjligheten att utvecklas både på och utanför planen.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Snabblänkar</h4>
-                <ul>
-                    <li><a href="#matcher">Matcher</a></li>
-                    <li><a href="#om">Om oss</a></li>
-                    <li><a href="mailto:info@rinkenfc.se">Kontakt</a></li>
-                    <li><a href="https://www.svenskalag.se/rinkenfc" target="_blank">Officiell Hemsida</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Följ oss</h4>
-                <ul>
-                    <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-                    <li><a href="https://www.instagram.com/rinkenfc.ungdomslag/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Rinken FC. Alla rättigheter förbehållna.</p>
-        </div>
-    </footer>
 </body>
 </html>
