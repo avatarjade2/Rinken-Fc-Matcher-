@@ -52,17 +52,43 @@ function uppdateraSidan() {
         lagNamnEl.innerText = lag.namn || "Okänt lag";
     }
     
-    // Uppdatera iframe med widget-URL
-    const iframe = document.getElementById('match-widget');
-    if (iframe && lag.widgetUrl) {
-        console.log("Sätter iframe src till:", lag.widgetUrl);
-        iframe.src = lag.widgetUrl;
-    } else {
-        console.error("Kunde inte uppdatera iframe - widgetUrl saknas:", lag);
-    }
+    // Uppdatera widget-iframe
+    uppdateraWidget(lag.widgetUrl);
     
     // Uppdatera Instagram-embed
     uppdateraInstagram();
+}
+
+function uppdateraWidget(widgetUrl) {
+    const iframe = document.getElementById('match-widget');
+    
+    if (!iframe || !widgetUrl) {
+        console.error("Kunde inte uppdatera iframe - widgetUrl saknas eller iframe finns inte");
+        return;
+    }
+    
+    console.log("Uppdaterar widget med URL:", widgetUrl);
+    
+    // Injicera widget via srcdoc med HTML-wrapper
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+            iframe { width: 100%; height: 100vh; border: none; display: block; }
+        </style>
+    </head>
+    <body>
+        <iframe src="${widgetUrl}" style="width: 100%; height: 100%; border: none;"></iframe>
+    </body>
+    </html>
+    `;
+    
+    iframe.srcdoc = htmlContent;
+    iframe.src = ""; // Rensa src för att använda srcdoc
 }
 
 function uppdateraInstagram() {
@@ -74,15 +100,7 @@ function uppdateraInstagram() {
         return;
     }
     
-    // Konvertera Instagram URL till embed URL
-    let embedUrl = instaLink;
-    
-    // Om det är en profil-URL
-    if (instaLink.includes('/') && !instaLink.includes('/p/') && !instaLink.includes('/reel/')) {
-        embedUrl = instaLink.replace(/\/$/, '') + '/?__a=1&__d=dis';
-    }
-    
-    console.log("Uppdaterar Instagram med:", embedUrl);
+    console.log("Uppdaterar Instagram med:", instaLink);
     
     // Rensa och lägg till Instagram-embed
     container.innerHTML = '';
