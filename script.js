@@ -30,6 +30,31 @@ function hittaNarmasteLagIndex() {
 function nastaLag() { nuvarandeIndex = (nuvarandeIndex + 1) % lagData.length; uppdateraSidan(); triggersAnimations(); }
 function forraLag() { nuvarandeIndex = (nuvarandeIndex - 1 + lagData.length) % lagData.length; uppdateraSidan(); triggersAnimations(); }
 
+function uppdateraLiveStatus(matchDatumStr) {
+    const nu = new Date().getTime();
+    const matchTid = new Date(matchDatumStr).getTime();
+    const tvaTimmar = 2 * 60 * 60 * 1000; // Antar att en match pågår max 2 timmar
+    
+    const statusBox = document.getElementById('system-status');
+    const pulse = document.getElementById('status-pulse');
+    const text = document.getElementById('status-text');
+    
+    // Rensa gamla klasser
+    pulse.classList.remove('pulse-green', 'pulse-red');
+    
+    if (nu >= matchTid && nu <= matchTid + tvaTimmar) {
+        // Matchen pågår just nu!
+        pulse.classList.add('pulse-red');
+        text.innerText = "Match Pågår";
+        statusBox.classList.add('is-live');
+    } else {
+        // Online men ingen pågående match
+        pulse.classList.add('pulse-green');
+        text.innerText = "System Online";
+        statusBox.classList.remove('is-live');
+    }
+}
+
 function startaNedrakning(matchDatumStr) {
     clearInterval(countdownInterval);
     const display = document.getElementById('countdown-display');
@@ -38,6 +63,8 @@ function startaNedrakning(matchDatumStr) {
 
     function mathKlocka() {
         const avstand = matchTid - new Date().getTime();
+        uppdateraLiveStatus(matchDatumStr); // Kolla live-status varje sekund
+
         if (avstand < 0) {
             rubrik.innerText = "Spelad / Pågår";
             display.innerText = "00:00:00:00";
@@ -58,8 +85,22 @@ function uppdateraSidan() {
     const lag = lagData[nuvarandeIndex];
     document.getElementById('lag-namn').innerText = lag.namn;
     const aktuellMatch = finnNastaMatchForLag(lag);
+    
     document.getElementById('match-aktuella-lag').innerText = aktuellMatch.text;
     document.getElementById('match-klockslag').innerText = aktuellMatch.info;
+    
+    // Hantera färg för Hemma / Borta
+    const matchCard = document.getElementById('match-card');
+    const matchTypBadge = document.getElementById('match-typ-badge');
+    
+    if (aktuellMatch.info.toLowerCase().includes('borta')) {
+        matchCard.classList.add('away-match');
+        matchTypBadge.innerText = "Bortamatch";
+    } else {
+        matchCard.classList.remove('away-match');
+        matchTypBadge.innerText = "Hemmamatch";
+    }
+
     startaNedrakning(aktuellMatch.tidsstampel);
 
     const srcDocContent = `
@@ -86,10 +127,8 @@ async function hamtaVader() {
     }
 }
 
-// Webflow-style observer
 function initieraAnimationer() {
     const elementsToReveal = document.querySelectorAll('.reveal-up, .reveal-scale');
-    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -97,24 +136,16 @@ function initieraAnimationer() {
                 observer.unobserve(entry.target);
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-    elementsToReveal.forEach(el => {
-        observer.observe(el);
-    });
+    elementsToReveal.forEach(el => observer.observe(el));
 }
 
-// Gör så att korten snäpper till lite snyggt när man byter lag
 function triggersAnimations() {
     const cards = document.querySelectorAll('.bento-card');
     cards.forEach(card => {
         card.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            card.style.transform = '';
-        }, 150);
+        setTimeout(() => { card.style.transform = ''; }, 150);
     });
 }
 
@@ -122,5 +153,5 @@ document.addEventListener('DOMContentLoaded', () => {
     nuvarandeIndex = hittaNarmasteLagIndex();
     uppdateraSidan();
     hamtaVader();
-    setTimeout(initieraAnimationer, 100); // Liten fördröjning för max effekt
+    setTimeout(initieraAnimationer, 100);
 });
