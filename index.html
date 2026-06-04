@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline'; frame-src 'self' https:;">
     <title>Rinken FC - Officiellt Matchcenter</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
@@ -23,9 +23,9 @@
                     <div class="logo-sub">Match Center</div>
                 </div>
             </div>
-            <div class="header-status" id="system-status" role="status">
+            <div class="header-status" id="system-status" role="status" aria-live="polite">
                 <span class="pulse" id="status-pulse"></span>
-                <span id="status-text">System Online</span>
+                <span id="status-text">Laddar...</span>
             </div>
         </div>
     </header>
@@ -50,8 +50,10 @@
                 <div class="card-header">
                     <h2>Senaste Resultaten</h2>
                 </div>
-                <div class="widget-box widget-styled">
-                    <iframe id="match-widget" title="Match widget"></iframe>
+                <div class="widget-styled">
+                    <div class="widget-box">
+                        <iframe id="match-widget" title="Match widget för aktuell lag" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                    </div>
                 </div>
             </div>
         </section>
