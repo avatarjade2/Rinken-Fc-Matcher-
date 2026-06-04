@@ -1,5 +1,6 @@
 let lagData = [];
 let nuvarandeIndex = 0;
+let instaLink = "";
 
 async function laddaAllt() {
     const url = "https://script.google.com/macros/s/AKfycbxS3rXlLXfCO3Co1iwQJtu6l3L_6rVWbQiImAKrkdJhJUQ2eRBoXzxNNvoy8cU7j5-c/exec?action=matcher";
@@ -14,6 +15,10 @@ async function laddaAllt() {
         
         const data = await response.json();
         console.log("Data mottagen:", data);
+        
+        // Hämta Instagram-länken (från insta-fältet)
+        instaLink = data.insta || "";
+        console.log("Instagram-länk:", instaLink);
         
         lagData = data.lag || [];
         
@@ -54,6 +59,45 @@ function uppdateraSidan() {
         iframe.src = lag.widgetUrl;
     } else {
         console.error("Kunde inte uppdatera iframe - widgetUrl saknas:", lag);
+    }
+    
+    // Uppdatera Instagram-embed
+    uppdateraInstagram();
+}
+
+function uppdateraInstagram() {
+    const container = document.getElementById('instagram-container');
+    
+    if (!instaLink) {
+        console.warn("Ingen Instagram-länk tillgänglig");
+        container.innerHTML = '<p style="text-align: center; color: #64748b;">Ingen Instagram-länk konfigurerad</p>';
+        return;
+    }
+    
+    // Konvertera Instagram URL till embed URL
+    let embedUrl = instaLink;
+    
+    // Om det är en profil-URL
+    if (instaLink.includes('/') && !instaLink.includes('/p/') && !instaLink.includes('/reel/')) {
+        embedUrl = instaLink.replace(/\/$/, '') + '/?__a=1&__d=dis';
+    }
+    
+    console.log("Uppdaterar Instagram med:", embedUrl);
+    
+    // Rensa och lägg till Instagram-embed
+    container.innerHTML = '';
+    
+    // Skapa blockquote för Instagram embed
+    const blockquote = document.createElement('blockquote');
+    blockquote.className = 'instagram-media';
+    blockquote.setAttribute('data-instgrm-permalink', instaLink);
+    blockquote.setAttribute('data-instgrm-version', '14');
+    
+    container.appendChild(blockquote);
+    
+    // Kör Instagram embed-scriptet på nytt för att ladda embeds
+    if (window.instgrm) {
+        window.instgrm.Embeds.process();
     }
 }
 
