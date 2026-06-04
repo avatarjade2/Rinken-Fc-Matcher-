@@ -30,9 +30,9 @@
                 <a href="#matcher" class="nav-link" data-section="matcher">Matcher</a>
                 <a href="#om" class="nav-link" data-section="om">Om klubben</a>
             </nav>
-            <div class="header-status" role="status">
-                <span class="pulse"></span>
-                <span>Live Aktiv</span>
+            <div class="header-status" id="system-status" role="status">
+                <span class="pulse" id="status-pulse"></span>
+                <span id="status-text">System Online</span>
             </div>
         </div>
     </header>
@@ -71,7 +71,7 @@
                     <span class="badge">Tabell & Resultat</span>
                     <h2>Senaste Resultaten</h2>
                 </div>
-                <div class="widget-box">
+                <div class="widget-box widget-styled">
                     <iframe id="match-widget" title="Match widget - Tabell och resultat"></iframe>
                 </div>
             </div>
@@ -80,9 +80,9 @@
             <div class="bento-sidebar">
                 
                 <!-- Nästa Match Card -->
-                <div class="bento-card highlight-card reveal-up" style="--delay: 0.4s">
+                <div class="bento-card highlight-card reveal-up" id="match-card" style="--delay: 0.4s">
                     <div class="card-header-alt">
-                        <span class="badge badge-red">Nästa Match</span>
+                        <span class="badge badge-red" id="match-typ-badge">Nästa Match</span>
                     </div>
                     <div class="match-details">
                         <div class="match-info-large" id="match-aktuella-lag">Laddar...</div>
@@ -109,11 +109,29 @@
                     </div>
                 </div>
 
+                <!-- Instagram Card -->
+                <div class="bento-card social-card reveal-up" style="--delay: 0.6s">
+                    <div class="card-header-alt" style="margin-bottom: 16px;">
+                        <span class="badge" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white;">Instagram</span>
+                    </div>
+                    <div class="ig-content">
+                        <h3>Bakom kulisserna</h3>
+                        <p>Följ vårt ungdomslag och se mer av vad som händer på och utanför planen i vardagen.</p>
+                        <a href="https://www.instagram.com/rinkenfc.ungdomslag/" target="_blank" rel="noopener noreferrer" class="ig-profile-btn">
+                            <div class="ig-avatar">R</div>
+                            <div class="ig-text-wrapper">
+                                <span class="ig-handle">@rinkenfc.ungdomslag</span>
+                                <span class="ig-action">Följ oss &rarr;</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <!-- NY Om oss Section -->
-        <section class="info-section reveal-up" style="--delay: 0.6s" id="om">
+        <!-- Om oss Section -->
+        <section class="info-section reveal-up" style="--delay: 0.7s" id="om">
             <div class="section-title">
                 <h2>Mer än bara fotboll</h2>
                 <p>Lär känna Rinken FC</p>
@@ -163,7 +181,7 @@
                 <h4>Följ oss</h4>
                 <ul>
                     <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-                    <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                    <li><a href="https://www.instagram.com/rinkenfc.ungdomslag/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
                 </ul>
             </div>
         </div>
