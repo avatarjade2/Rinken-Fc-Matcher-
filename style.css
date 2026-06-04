@@ -97,7 +97,6 @@ main { max-width: 1400px; margin: 0 auto; padding: 40px 24px 100px; }
 .card-header { margin-bottom: 24px; }
 .card-header h2 { margin: 12px 0 0 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
 .badge { background: var(--bg-color); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-.badge-red { background: rgba(225, 29, 72, 0.1); color: var(--brand-red); }
 
 /* Widget Styling */
 .widget-card { display: flex; flex-direction: column; min-height: 600px; }
@@ -105,67 +104,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 40px 24px 100px; }
 .widget-box { flex-grow: 1; overflow: hidden; }
 #match-widget { width: 100%; height: 100%; border: none; display: block; border-radius: 8px; }
 
-/* Match Info (Hemma) */
-.highlight-card { background: var(--brand-dark); color: white; }
-.match-info-large { font-size: 1.75rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; }
-.match-time-sub { color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px; }
-.countdown-wrapper { background: rgba(255,255,255,0.05); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1); }
-.cd-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; margin-bottom: 10px; }
-.cd-clock { font-size: 1.8rem; font-weight: 800; font-family: 'Courier New', monospace; letter-spacing: -1px; }
-
-/* Match Info (Borta) */
-.highlight-card.away-match { background: var(--surface); color: var(--brand-dark); border: 2px solid #e2e8f0; }
-.highlight-card.away-match .match-time-sub { color: var(--text-muted); }
-.highlight-card.away-match .countdown-wrapper { background: var(--bg-color); border: 1px solid #e2e8f0; }
-.highlight-card.away-match .cd-label { color: var(--text-muted); }
-
-/* Karta */
-.location-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-.location-info h3 { margin: 0 0 4px 0; font-size: 1.2rem; font-weight: 800; }
-.sub-text { margin: 0; color: var(--text-muted); font-size: 0.85rem; }
-.weather-pill { background: var(--bg-color); padding: 8px 12px; border-radius: 100px; font-weight: 700; font-size: 0.9rem; border: 1px solid #e2e8f0; }
-.map-box { height: 200px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid #e2e8f0; }
-.map-box iframe { width: 100%; height: 100%; border: none; }
-
-/* Instagram Card */
-.social-card .ig-content h3 { margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 800; }
-.social-card .ig-content p { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 20px 0; line-height: 1.5; }
-.ig-profile-btn { display: flex; align-items: center; gap: 16px; background: var(--bg-color); padding: 16px; border-radius: 16px; text-decoration: none; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
-.ig-profile-btn:hover { border-color: var(--brand-red); background: white; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.1); }
-.ig-avatar { width: 48px; height: 48px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; }
-.ig-text-wrapper { display: flex; flex-direction: column; }
-.ig-handle { font-weight: 700; color: var(--brand-dark); font-size: 0.95rem; }
-.ig-action { font-size: 0.85rem; color: var(--brand-red); font-weight: 600; margin-top: 4px; }
-
-/* Om oss / Info Sektion */
-.section-title { text-align: center; margin-bottom: 40px; margin-top: 60px; }
-.section-title h2 { font-size: 2.5rem; font-weight: 900; margin: 0 0 8px 0; letter-spacing: -1px; }
-.section-title p { color: var(--text-muted); font-size: 1.1rem; margin: 0; font-weight: 500; }
-.info-section { margin-top: 40px; }
-.info-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-.info-card { background: var(--surface); padding: 32px; border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo); }
-.info-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.04); }
-.info-icon { background: rgba(225, 29, 72, 0.1); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-.info-card h3 { margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 800; }
-.info-card p { color: var(--text-muted); line-height: 1.6; margin: 0; font-size: 0.95rem; }
-
-/* Footers */
-footer { background: var(--brand-dark); color: white; padding: 60px 24px 20px; margin-top: 80px; }
-.footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
-.footer-section h4 { margin: 0 0 20px 0; font-size: 1.2rem; }
-.footer-section p { color: #94a3b8; line-height: 1.6; }
-.footer-section ul { list-style: none; padding: 0; margin: 0; }
-.footer-section ul li { margin-bottom: 12px; }
-.footer-section ul a { color: #94a3b8; text-decoration: none; transition: color 0.2s; }
-.footer-section ul a:hover { color: white; }
-.footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #64748b; font-size: 0.9rem; }
-
 /* Animationer */
 .reveal-up { opacity: 0; transform: translateY(60px); transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo); transition-delay: var(--delay, 0s); }
 .reveal-scale { opacity: 0; transform: scale(0.92) translateY(20px); transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo); }
 .is-revealed { opacity: 1; transform: translateY(0) scale(1); }
-
-@media (max-width: 1024px) {
-    .bento-grid { grid-template-columns: 1fr; }
-    .nav-menu { display: none; }
-}
