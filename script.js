@@ -16,6 +16,7 @@ async function laddaAllt() {
         if (lagData.length > 0) {
             uppdateraSidan();
             visaStatus("System Online", true);
+            setupAnimations();
         } else {
             visaStatus("Ingen data hittad", false);
         }
@@ -26,6 +27,8 @@ async function laddaAllt() {
 }
 
 function uppdateraSidan() {
+    if (lagData.length === 0) return;
+    
     const lag = lagData[nuvarandeIndex];
     
     // Uppdatera lagnamn
@@ -64,6 +67,27 @@ function visaStatus(text, isOnline) {
         statusPulse.className = 'pulse pulse-red';
         statusContainer.classList.remove('is-live');
     }
+}
+
+function setupAnimations() {
+    // Intersection Observer för scroll-animationer
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => {
+        observer.observe(el);
+    });
 }
 
 // Läs in allt när DOM är klar
